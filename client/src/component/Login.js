@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import photo from "../assets/App-Login_photo.png";
 import InputLabel from "@mui/material/InputLabel";
 import TextField from "@mui/material/TextField";
@@ -11,9 +11,6 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Button from "@mui/material/Button";
 import { NavLink } from "react-router-dom";
-import Checkbox from "@mui/material/Checkbox";
-
-const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 const Login = () => {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -22,6 +19,24 @@ const Login = () => {
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
+  };
+
+  const [loginData, setLoginData] = useState({
+    Email: "",
+    Password: "",
+  });
+
+  function handleSubmit() {
+    console.log(loginData);
+  }
+
+  const handleChange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setLoginData({
+      ...loginData,
+      [name]: value,
+    });
   };
 
   return (
@@ -52,6 +67,9 @@ const Login = () => {
           </InputLabel>
           <TextField
             id="email"
+            name="Email"
+            value={loginData.Email || ""}
+            onChange={handleChange}
             label="Your Email"
             variant="outlined"
             sx={{ width: 280 }}
@@ -68,7 +86,10 @@ const Login = () => {
             <OutlinedInput
               sx={{ width: 280 }}
               id="password"
+              name="Password"
+              value={loginData.Password || ""}
               type={showPassword ? "text" : "password"}
+              onChange={handleChange}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
@@ -89,6 +110,7 @@ const Login = () => {
             color="success"
             fullWidth
             sx={{ mt: 3, maxWidth: "100%" }}
+            onClick={handleSubmit}
           >
             Login
           </Button>

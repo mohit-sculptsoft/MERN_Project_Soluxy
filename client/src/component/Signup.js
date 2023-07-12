@@ -1,76 +1,34 @@
 import { Typography } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import photo from "../assets/App-Login_photo.png";
 import InputLabel from "@mui/material/InputLabel";
 import TextField from "@mui/material/TextField";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormLabel from "@mui/material/FormLabel";
-import TextareaAutosize from "@mui/base/TextareaAutosize";
 import Button from "@mui/material/Button";
-import { styled } from "@mui/system";
 import { NavLink } from "react-router-dom";
 
 const Signup = () => {
-  const blue = {
-    100: "#DAECFF",
-    200: "#b6daff",
-    400: "#3399FF",
-    500: "#007FFF",
-    600: "#0072E5",
-    900: "#003A75",
+  const [formData, setFormData] = useState({
+    Email: "",
+    Name: "",
+    Birthday: "",
+    Phone_Number: "",
+    Gender: "",
+    Address: "",
+  });
+
+  const handleChange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setFormData({ ...formData, [name]: value });
   };
 
-  const grey = {
-    50: "#f6f8fa",
-    100: "#eaeef2",
-    200: "#d0d7de",
-    300: "#afb8c1",
-    400: "#8c959f",
-    500: "#6e7781",
-    600: "#57606a",
-    700: "#424a53",
-    800: "#32383f",
-    900: "#24292f",
-  };
-
-  const StyledTextarea = styled(TextareaAutosize)(
-    ({ theme }) => `
-    width: 320px;
-    font-family: IBM Plex Sans, sans-serif;
-    font-size: 0.875rem;
-    font-weight: 400;
-    line-height: 1.5;
-    padding: 12px;
-    border-radius: 12px 12px 0 12px;
-    color: ${theme.palette.mode === "dark" ? grey[300] : grey[900]};
-    background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
-    border: 1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]};
-    box-shadow: 0px 2px 2px ${
-      theme.palette.mode === "dark" ? grey[900] : grey[50]
-    };
-  
-    &:hover {
-      border-color: ${blue[400]};
-    }
-  
-    &:focus {
-      border-color: ${blue[400]};
-      box-shadow: 0 0 0 3px ${
-        theme.palette.mode === "dark" ? blue[500] : blue[200]
-      };
-    }
-  
-    // firefox
-    &:focus-visible {
-      outline: 0;
-    }
-  `
-  );
+  function handleClick() {
+    console.log(formData);
+  }
   return (
     <div
       style={{
@@ -90,7 +48,7 @@ const Signup = () => {
           width: "300px",
         }}
       >
-        Signup to Soluxy
+        <Typography variant="h7">Signup to Soluxy</Typography>
         <br />
         <br />
         <InputLabel shrink>
@@ -99,7 +57,9 @@ const Signup = () => {
         <TextField
           type="email"
           id="email"
-          name="email"
+          value={formData.Email || ""}
+          onChange={handleChange}
+          name="Email"
           label="Your Email"
           variant="outlined"
           sx={{ width: 280 }}
@@ -112,7 +72,9 @@ const Signup = () => {
         <TextField
           type="text"
           id="name"
-          name="name"
+          name="Name"
+          value={formData.Name || ""}
+          onChange={handleChange}
           label="Your Name"
           variant="outlined"
           sx={{ width: 280 }}
@@ -122,9 +84,20 @@ const Signup = () => {
         <InputLabel shrink>
           <b>Birthday:</b>
         </InputLabel>
-        <LocalizationProvider dateAdapter={AdapterDayjs} sx={{ width: 400 }}>
-          <DatePicker name="birthday" id="birthday" />
-        </LocalizationProvider>
+        <input
+          type="date"
+          id="birthday"
+          name="Birthday"
+          value={formData.Birthday || ""}
+          onChange={handleChange}
+          style={{
+            width: 280,
+            height: 30,
+            borderRadius: "8px 8px 8px 8px",
+            fontFamily: "Poppins",
+            borderWidth: "thin",
+          }}
+        />
         <br />
         <br />
         <InputLabel shrink>
@@ -133,7 +106,9 @@ const Signup = () => {
         <TextField
           type="Number"
           id="number"
-          name="number"
+          name="Phone_Number"
+          value={formData.Phone_Number || ""}
+          onChange={handleChange}
           label="Your Number"
           variant="outlined"
           sx={{ width: 280 }}
@@ -148,7 +123,9 @@ const Signup = () => {
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue="female"
             id="gender"
-            name="gender"
+            name="Gender"
+            value={formData.Gender || ""}
+            onChange={handleChange}
           >
             <div style={{ display: "flex" }}>
               <FormControlLabel
@@ -169,11 +146,18 @@ const Signup = () => {
         <InputLabel shrink>
           <b>Address:</b>
         </InputLabel>
-        <StyledTextarea
-          aria-label="minimum height"
-          minRows={3}
-          id="address"
-          name="address"
+        <textarea
+          style={{
+            fontSize: "45%",
+            borderRadius: "8px 8px 8px 8px",
+            fontFamily: "Poppins",
+          }}
+          cols={35}
+          rows={6}
+          id="Address"
+          name="Address"
+          value={formData.Address}
+          onChange={handleChange}
           placeholder="Your Address"
           sx={{ width: 250 }}
         />
@@ -182,6 +166,7 @@ const Signup = () => {
           color="success"
           fullWidth
           sx={{ mt: 3, maxWidth: "100%" }}
+          onClick={handleClick}
         >
           Sign Up
         </Button>
