@@ -1,0 +1,17 @@
+{
+  "name": "soluxy",
+  "version": "1.0.0",
+  "description": "soluxy e card project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Miten",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
+    "mongoose": "^7.3.3",
+    "nodemailer": "^6.9.3"
+  }
+}
