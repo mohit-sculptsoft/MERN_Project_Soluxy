@@ -3,6 +3,7 @@ import "./App.css";
 import Signup from "./component/Signup";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Login from "./component/Login";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const theme = createTheme({
@@ -16,6 +17,7 @@ function App() {
         <Route path="/registration" element={<Signup />} />
         <Route path="/login" element={<Login />} />
       </Routes>
+      <ToastContainer />
     </ThemeProvider>
   );
 }

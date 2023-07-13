@@ -8,29 +8,135 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormLabel from "@mui/material/FormLabel";
 import Button from "@mui/material/Button";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import "./Signup.css";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 
 const Signup = () => {
+  const navigate = useNavigate();
+  const [error, seterror] = useState({});
   const [formData, setFormData] = useState({
     Email: "",
     Name: "",
+    Password: "",
     Birthday: "",
     Phone_Number: "",
     Gender: "",
-    Address: "",
+    Address_line_1: "",
+    Address_line_2: "",
+    City: "",
   });
+
+  const validateForm = () => {
+    let err = {};
+
+    if (formData.Email === "") {
+      err.Email = "Email Required";
+    } else if (!formData.Email.includes("@")) {
+      err.Email = "Enter a valid Email";
+    }
+    if (formData.Name === "") {
+      err.Name = "Name Required";
+    }
+    if (formData.Password === "") {
+      err.Password = "Password Required";
+    } else if (!formData.Password.includes("@" || "$" || "#" || "&")) {
+      err.Password = "Add special character in password";
+    } else if (formData.Password.length < 6) {
+      err.Password = "Password must contain at least 6 characters";
+    } else if (formData.Password.length > 10) {
+      err.Password = "Password not more than 10 characters";
+    }
+    if (formData.Birthday === "") {
+      err.Birthday = "Birthday Required";
+    }
+    if (formData.Phone_Number === "") {
+      err.Phone_Number = "Phone_Number Required";
+    } else if (formData.Phone_Number.length != 10) {
+      err.Phone_Number = "Enter 10 digit Mobile Number";
+    }
+    if (formData.Gender === "") {
+      err.Gender = "Gender Required";
+    }
+    if (formData.Address_line_1 === "") {
+      err.Address_line_1 = "Address_line_1 Required";
+    }
+    if (formData.Address_line_2 === "") {
+      err.Address_line_2 = "Address_line_2 Required";
+    }
+    if (formData.City === "") {
+      err.City = "City Required";
+    }
+
+    seterror({ ...err });
+
+    return Object.keys(err).length < 1;
+  };
 
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
     setFormData({ ...formData, [name]: value });
+    seterror({ ...error, [name]: "" });
   };
 
-  function handleClick() {
-    console.log(formData);
+  async function handleClick() {
+    let isValid = validateForm();
+    console.log(isValid);
+
+    if (isValid) {
+      try {
+        const {
+          Email,
+          Name,
+          Password,
+          Birthday,
+          Phone_Number,
+          Gender,
+          Address_line_1,
+          Address_line_2,
+          City,
+        } = formData;
+        const res = await fetch("/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            Email,
+            Name,
+            Password,
+            Birthday,
+            Phone_Number,
+            Gender,
+            Address_line_1,
+            Address_line_2,
+            City,
+          }),
+        });
+        const data = await res.json();
+        console.log(data);
+        if (res.status === 402) {
+          toast.error("This email is already Register Enter another email", {
+            position: "top-center",
+            theme: "colored",
+          });
+        } else {
+          toast.success("User Registration Successfully", {
+            position: "top-center",
+            theme: "colored",
+          });
+          navigate("/login");
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    }
   }
   return (
     <div
+      id="new"
       style={{
         display: "flex",
         justifyContent: "center",
@@ -43,7 +149,7 @@ const Signup = () => {
         sx={{
           backgroundColor: "white",
           padding: "8%",
-          overflowY: "auto",
+          overflowY: "scroll",
           height: "280px",
           width: "300px",
         }}
@@ -64,7 +170,7 @@ const Signup = () => {
           variant="outlined"
           sx={{ width: 280 }}
         />
-        <br />
+        <div style={{ color: "red", fontSize: "15px" }}>{error.Email}</div>
         <br />
         <InputLabel shrink>
           <b>Name:</b>
@@ -79,7 +185,22 @@ const Signup = () => {
           variant="outlined"
           sx={{ width: 280 }}
         />
+        <div style={{ color: "red", fontSize: "15px" }}>{error.Name}</div>
         <br />
+        <InputLabel shrink>
+          <b>Password:</b>
+        </InputLabel>
+        <TextField
+          type="password"
+          id="password"
+          name="Password"
+          value={formData.Password || ""}
+          onChange={handleChange}
+          label="Your Password"
+          variant="outlined"
+          sx={{ width: 280 }}
+        />
+        <div style={{ color: "red", fontSize: "15px" }}>{error.Password}</div>
         <br />
         <InputLabel shrink>
           <b>Birthday:</b>
@@ -98,7 +219,7 @@ const Signup = () => {
             borderWidth: "thin",
           }}
         />
-        <br />
+        <div style={{ color: "red", fontSize: "15px" }}>{error.Birthday}</div>
         <br />
         <InputLabel shrink>
           <b>Phone Number:</b>
@@ -113,7 +234,9 @@ const Signup = () => {
           variant="outlined"
           sx={{ width: 280 }}
         />
-        <br />
+        <div style={{ color: "red", fontSize: "15px" }}>
+          {error.Phone_Number}
+        </div>
         <br />
         <div style={{ display: "flex" }}>
           <FormLabel id="demo-radio-buttons-group-label" sx={{ mt: 1 }}>
@@ -142,25 +265,56 @@ const Signup = () => {
             </div>
           </RadioGroup>
         </div>
+        <div style={{ color: "red", fontSize: "15px" }}>{error.Gender}</div>
         <br />
         <InputLabel shrink>
-          <b>Address:</b>
+          <b>Address Line 1</b>
         </InputLabel>
-        <textarea
-          style={{
-            fontSize: "45%",
-            borderRadius: "8px 8px 8px 8px",
-            fontFamily: "Poppins",
-          }}
+        <TextField
           cols={35}
           rows={6}
           id="Address"
-          name="Address"
-          value={formData.Address}
+          name="Address_line_1"
+          value={formData.Address_line_1}
           onChange={handleChange}
-          placeholder="Your Address"
-          sx={{ width: 250 }}
+          label="Address Line 1"
+          sx={{ width: 280 }}
         />
+        <div style={{ color: "red", fontSize: "15px" }}>
+          {error.Address_line_1}
+        </div>
+        <br />
+        <InputLabel shrink>
+          <b>Address Line 2</b>
+        </InputLabel>
+        <TextField
+          cols={35}
+          rows={6}
+          id="Address"
+          name="Address_line_2"
+          value={formData.Address_line_2}
+          onChange={handleChange}
+          label="Address Line 2"
+          sx={{ width: 280 }}
+        />
+        <div style={{ color: "red", fontSize: "15px" }}>
+          {error.Address_line_2}
+        </div>
+        <br />
+        <InputLabel shrink>
+          <b>City</b>
+        </InputLabel>
+        <TextField
+          cols={35}
+          rows={6}
+          id="Address"
+          name="City"
+          value={formData.City}
+          onChange={handleChange}
+          label="City"
+          sx={{ width: 280 }}
+        />
+        <div style={{ color: "red", fontSize: "15px" }}>{error.City}</div>
         <Button
           variant="contained"
           color="success"
@@ -179,6 +333,7 @@ const Signup = () => {
           </NavLink>
         </div>
       </Typography>
+      <ToastContainer />
     </div>
   );
 };

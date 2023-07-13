@@ -11,9 +11,12 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Button from "@mui/material/Button";
 import { NavLink } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 
 const Login = () => {
   const [showPassword, setShowPassword] = React.useState(false);
+  const [error, seterror] = useState({});
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -26,8 +29,62 @@ const Login = () => {
     Password: "",
   });
 
-  function handleSubmit() {
-    console.log(loginData);
+  const validateForm = () => {
+    let err = {};
+
+    if (loginData.Email === "") {
+      err.Email = "Email Required";
+    } else if (!loginData.Email.includes("@")) {
+      err.Email = "Enter a valid Email";
+    }
+    if (loginData.Password === "") {
+      err.Password = "Password Required";
+    } else if (!loginData.Password.includes("@" || "$" || "#" || "&")) {
+      err.Password = "Add special character in password";
+    } else if (loginData.Password.length < 6) {
+      err.Password = "Password must contain at least 6 characters";
+    } else if (loginData.Password.length > 10) {
+      err.Password = "Password not more than 10 characters";
+    }
+
+    seterror({ ...err });
+
+    return Object.keys(err).length < 1;
+  };
+
+  async function handleSubmit() {
+    const isValid = validateForm();
+    if (isValid) {
+      const { Email, Password } = loginData;
+      const res = await fetch("/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          Email,
+          Password,
+        }),
+      });
+      const data = await res.json();
+      if (res.status === 401) {
+        toast.error("User not exists Plzz Signup", {
+          position: "top-center",
+          theme: "colored",
+        });
+      } else if (res.status === 402) {
+        toast.error("Invalid Credentials", {
+          position: "top-center",
+          theme: "colored",
+        });
+      } else {
+        toast.success("Login Successfull", {
+          position: "top-center",
+          theme: "colored",
+        });
+        setLoginData({});
+      }
+    }
   }
 
   const handleChange = (e) => {
@@ -37,11 +94,13 @@ const Login = () => {
       ...loginData,
       [name]: value,
     });
+    seterror({ ...error, [name]: "" });
   };
 
   return (
     <>
       <div
+        id="new"
         style={{
           display: "flex",
           justifyContent: "center",
@@ -74,7 +133,7 @@ const Login = () => {
             variant="outlined"
             sx={{ width: 280 }}
           />
-          <br />
+          <div style={{ color: "red", fontSize: "15px" }}>{error.Email}</div>
           <br />
           <InputLabel shrink>
             <b>Password:</b>
@@ -105,6 +164,7 @@ const Login = () => {
               label="Password"
             />
           </FormControl>
+          <div style={{ color: "red", fontSize: "15px" }}>{error.Password}</div>
           <Button
             variant="contained"
             color="success"
@@ -128,6 +188,7 @@ const Login = () => {
           </div>
         </Typography>
       </div>
+      <ToastContainer />
     </>
   );
 };

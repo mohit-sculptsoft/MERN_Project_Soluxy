@@ -10,6 +10,10 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  Password: {
+    type: String,
+    required: true,
+  },
   Birthday: {
     type: String,
     required: true,
@@ -22,7 +26,15 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  Address: {
+  Address_line_1: {
+    type: String,
+    required: true,
+  },
+  Address_line_2: {
+    type: String,
+    required: true,
+  },
+  City: {
     type: String,
     required: true,
   },
