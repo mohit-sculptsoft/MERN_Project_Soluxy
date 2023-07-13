@@ -73,7 +73,7 @@ const Login = () => {
           theme: "colored",
         });
       } else if (res.status === 402) {
-        toast.error("Invalid Credentials", {
+        toast.error("Incorrect Password", {
           position: "top-center",
           theme: "colored",
         });
@@ -165,11 +165,14 @@ const Login = () => {
             />
           </FormControl>
           <div style={{ color: "red", fontSize: "15px" }}>{error.Password}</div>
+          <NavLink>
+            <Typography sx={{ ml: 17, mt: 2 }}>Forgot Password ?</Typography>
+          </NavLink>
           <Button
             variant="contained"
             color="success"
             fullWidth
-            sx={{ mt: 3, maxWidth: "100%" }}
+            sx={{ mt: 2, maxWidth: "100%" }}
             onClick={handleSubmit}
           >
             Login

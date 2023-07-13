@@ -12,6 +12,10 @@ import { NavLink, useNavigate } from "react-router-dom";
 import "./Signup.css";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -20,13 +24,14 @@ const Signup = () => {
     Email: "",
     Name: "",
     Password: "",
-    Birthday: "",
     Phone_Number: "",
     Gender: "",
     Address_line_1: "",
     Address_line_2: "",
     City: "",
   });
+
+  const [Birthday, setBirthday] = useState("");
 
   const validateForm = () => {
     let err = {};
@@ -42,13 +47,13 @@ const Signup = () => {
     if (formData.Password === "") {
       err.Password = "Password Required";
     } else if (!formData.Password.includes("@" || "$" || "#" || "&")) {
-      err.Password = "Add special character in password";
+      err.Password = "Add special characters @,$,#,&";
     } else if (formData.Password.length < 6) {
       err.Password = "Password must contain at least 6 characters";
     } else if (formData.Password.length > 10) {
       err.Password = "Password not more than 10 characters";
     }
-    if (formData.Birthday === "") {
+    if (Birthday === "") {
       err.Birthday = "Birthday Required";
     }
     if (formData.Phone_Number === "") {
@@ -84,14 +89,12 @@ const Signup = () => {
   async function handleClick() {
     let isValid = validateForm();
     console.log(isValid);
-
     if (isValid) {
       try {
         const {
           Email,
           Name,
           Password,
-          Birthday,
           Phone_Number,
           Gender,
           Address_line_1,
@@ -205,7 +208,7 @@ const Signup = () => {
         <InputLabel shrink>
           <b>Birthday:</b>
         </InputLabel>
-        <input
+        {/* <input
           type="date"
           id="birthday"
           name="Birthday"
@@ -218,7 +221,23 @@ const Signup = () => {
             fontFamily: "Poppins",
             borderWidth: "thin",
           }}
-        />
+        /> */}
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            slotProps={{
+              textField: {
+                error: false,
+              },
+            }}
+            sx={{ width: 280 }}
+            id="birthday"
+            value={Birthday}
+            onChange={(newValue) => {
+              setBirthday(newValue);
+              seterror({ ...error, Birthday: "" });
+            }}
+          />
+        </LocalizationProvider>
         <div style={{ color: "red", fontSize: "15px" }}>{error.Birthday}</div>
         <br />
         <InputLabel shrink>
